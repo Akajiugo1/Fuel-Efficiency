@@ -1,0 +1,240 @@
+---
+title: 'Forecasting Car Fuel Efficiency through Multiple Linear Regression'
+output: 
+    html_document:
+        toc: true
+        toc_float: true
+        theme: cerulean
+---
+<style>
+body {
+text-align: justify}
+</style>
+
+
+# 1.0 INTRODUCTION:
+
+In this report, we will perform a multiple linear regression analysis on the built-in `mtcars` dataset in `R`. The dataset contains information about various car models and their performance characteristics. Our aim is to explore relationships between different variables and build multiple regression models to predict the `mpg` (miles per gallon) of the cars based on other attributes.
+
+
+# 2.0 DATA DESCRIPTION:
+
+The `mtcars` dataset consists of `32 observations` and `11 variables`, as follows:
+
++ `mpg`: Miles per gallon (numeric)
++ `cyl`: Number of cylinders (factor with 3 levels: 4, 6, 8)
++ `disp`: Displacement (numeric)
++ `hp`: Horsepower (numeric)
++ `drat`: Rear axle ratio (numeric)
++ `wt`: Weight (numeric)
++ `qsec`: 1/4 mile time (numeric)
++ `vs`: V/S (V-engine or straight engine) (numeric: 0 = V-shaped engine, 1 = Straight engine)
++ `am`: Transmission (numeric: 0 = automatic, 1 = manual)
++ `gear`: Number of forward gears (numeric)
++ `carb`: Number of carburetors (numeric)
+
+
+# 3.0 EDA:
+
+We began by exploring the dataset to understand its structure and gain insights into the variables. The `str()` function revealed the data types of each variable. The `cyl` variable was transformed into a factor since it represents a categorical variable with three levels.
+
+```{r}
+str(mtcars)
+summary(mtcars)
+
+```
+
+The summary statistics provide a brief overview of the variables present in the `mtcars` dataset, which contains information about various car models. Here is an interpretation of the results:
+
+***"mpg" (Miles per Gallon):***
+
++ Minimum: 10.40, Maximum: 33.90
++ Mean: 20.09, Median: 19.20
+
++The data represents car fuel efficiency (miles per gallon). The values range from 10.40 to 33.90, with an average of 20.09. The median is slightly lower at 19.20, indicating that the data might be positively skewed.
+
+***"cyl" (Number of Cylinders):***
+
++ There are three unique values: 4, 6, and 8.
++ The majority of the cars have 8 cylinders (14), followed by 4 cylinders (11), and the fewest have 6 cylinders (7).
+
+
+***"disp" (Displacement):***
+
++ Minimum: 71.1, Maximum: 472.0
++ Mean: 230.7, Median: 196.3
++ Displacement refers to the volume of all cylinders in the engine. The values range from 71.1 to 472.0, with an average of 230.7. The median is 196.3, indicating that there might be some outliers on the higher end of the range.
+
+***"hp" (Horsepower):***
+
++ Minimum: 52.0, Maximum: 335.0
++ Mean: 146.7, Median: 123.0
++ Horsepower represents the car's engine power. The values range from 52.0 to 335.0, with an average of 146.7. The median is lower at 123.0, which suggests the presence of some higher horsepower outliers.
+
+***"drat" (Rear Axle Ratio):***
+
++ Minimum: 2.760, Maximum: 4.930
++ Mean: 3.597, Median: 3.695
++ The rear axle ratio is the ratio of the number of revolutions the driveshaft makes to the number of revolutions the rear wheels make. The values range from 2.760 to 4.930, with an average of 3.597. The median is 3.695.
+
+***"wt" (Weight):***
+
++ Minimum: 1.513, Maximum: 5.424
++ Mean: 3.217, Median: 3.325
++ The weight of the cars ranges from 1.513 to 5.424, with an average of 3.217. The median is slightly higher at 3.325.
+
+***"qsec" (Quarter Mile Time):***
+
++ Minimum: 14.50, Maximum: 22.90
++ Mean: 17.85, Median: 17.71
++ Quarter mile time is the time it takes a car to cover a quarter-mile from a standing start. The values range from 14.50 to 22.90, with an average of 17.85. The median is 17.71.
+
+***"vs" (Engine Type V/S):***
+
++ Two unique values: 0 and 1.
++ "vs" represents the engine type, where 0 indicates a V-shaped engine and 1 indicates a straight engine. The majority of the cars have a V-shaped engine (0).
+
+***"am" (Transmission Type):***
+
++ Two unique values: 0 and 1.
++ "am" represents the transmission type, where 0 indicates automatic transmission and 1 indicates manual transmission. The data is relatively balanced between automatic and manual transmissions.
+
+***"gear" (Number of Gears):***
+
++ Values range from 3 to 5.
++ The majority of the cars have 4 gears.
+
+***"carb" (Number of Carburetors):***
+
++ Values range from 1 to 8.
++ The most common number of carburetors is 2.
+
+# 4.0 SCATTER PLOT
+
+To gain a better understanding of relationships between variables, we used scatter plots and box plots for multiple variables using the `plot()` function. This allowed us to visualize potential associations and identify any outliers or patterns.
+
+
+```{r}
+plot(mtcars)
+
+```
+
+# 5.0 MODEL BUILDING
+
+We built three multiple linear regression models to predict `mpg` based on different combinations of predictors. The predictors used were `cyl` and `wt` in the first model, `cyl` and `hp` in the second model, and `cyl`, `wt`, and `hp` in the third model. We utilized the `lm()` function to fit these models.
+
+```{r}
+mtcars$cyl <- as.factor(mtcars$cyl)
+
+model_cars <- lm(mtcars$mpg ~ mtcars$cyl + mtcars$wt)
+model_cars_1 <- lm(mtcars$mpg ~ mtcars$cyl + mtcars$hp)
+model_cars_2 <- lm(mtcars$mpg ~ mtcars$cyl + mtcars$wt + mtcars$hp)
+
+```
+
+
+# 6.0 MODEL ANALYSIS
+
+We evaluated each model by examining their summaries obtained using the summary() function. The summaries provided information on coefficients, standard errors, t-values, p-values, and the adjusted R-squared
+
+```{r}
+summary(model_cars)
+summary(model_cars_1)
+summary(model_cars_2)
+
+```
+
+Three multiple linear regression models were developed to understand the relationship between the miles per gallon (mpg) of cars and their predictor variables (cylinders, weight, and horsepower). Each model includes different combinations of predictors. Here's a summary of the key findings for each model:
+
+### ***Model 1:***
+
++ Formula: mpg ~ cyl + wt
++ Coefficients:
++ Intercept: 33.9908
++ cyl6: -4.2556
++ cyl8: -6.0709
++ wt: -3.2056
+
++ ***Interpretation:***
+
+The model suggests that cars with 6 or 8 cylinders have lower mpg compared to cars with 4 cylinders when controlling for weight (wt).
+Additionally, for every one-unit increase in weight, the mpg decreases by 3.2056 units, holding the number of cylinders constant.
+
++ ***Goodness of Fit:***
+
+The model's R-squared value (0.8374) indicates that about 83.74% of the variance in mpg is explained by the predictors (cyl and wt).
+The F-statistic is significant (p-value: 3.594e-11), suggesting that the model is statistically significant in predicting mpg.
+
+### ***Model 2:***
+
++ Formula: mpg ~ cyl + hp
++ Coefficients:
++ Intercept: 28.65012
++ cyl6: -5.96766
++ cyl8: -8.52085
++ hp: -0.02404
+
++ ***Interpretation:***
+
+The model suggests that cars with 6 or 8 cylinders have lower mpg compared to cars with 4 cylinders when controlling for horsepower (hp).
+However, the horsepower (hp) variable does not appear to have a statistically significant effect on mpg, as its p-value is relatively high (0.12995).
+Goodness of Fit:
+The model's R-squared value (0.7539) indicates that about 75.39% of the variance in mpg is explained by the predictors (cyl and hp).
+The F-statistic is significant (p-value: 1.14e-08), indicating that the model is statistically significant in predicting mpg.
+
+### ***Model 3:***
+
++ Formula: mpg ~ cyl + wt + hp
++ Coefficients:
++ Intercept: 35.846
++ cyl6: -3.35902
++ cyl8: -3.18588
++ wt: -3.1814
++ hp: -0.02312
+
++ ***Interpretation:***
+
+The model suggests that cars with 6 or 8 cylinders have lower mpg compared to cars with 4 cylinders when controlling for weight (wt) and horsepower (hp).
+The coefficients for weight (wt) and cylinders (cyl) remain relatively unchanged compared to Model 1 and Model 2.
+The horsepower (hp) variable, similar to Model 2, does not have a statistically significant effect on mpg.
+Goodness of Fit:
+The model's R-squared value (0.8572) indicates that about 85.72% of the variance in mpg is explained by the predictors (cyl, wt, and hp).
+The F-statistic is significant (p-value: 4.869e-11), indicating that the model is statistically significant in predicting mpg.
+
+Overall, Model 3 with predictors cyl, wt, and hp has the highest R-squared value, indicating that it provides the best fit to the data among the three models. The weight (wt) variable consistently shows a significant negative impact on mpg, suggesting that heavier cars tend to have lower fuel efficiency. While the number of cylinders (cyl) demonstrates a significant effect in all models, the impact of horsepower (hp) appears less consistent and is not statistically significant in the presence of other predictors.
+
+# 7.0 RESIDUAL ANALYSIS
+
+We checked the fitted values and residuals of the first model to assess the goodness of fit. The scatter plot of fitted values against residuals was used to identify any remaining patterns or deviations. Additionally, we examined the normality of residuals using a `quantile-quantile (QQ) plot.`
+
+```{r}
+
+model_cars$fitted.values
+plot(model_cars$fitted.values, model_cars$residuals)
+abline(0, 0, col = "red")
+qqnorm(model_cars$residuals)
+qqline(model_cars$residuals, col = "red")
+
+model_cars_only_wt <- lm(mtcars$mpg ~ mtcars$wt)
+```
+
+# 8.0 MODEL SELECTION
+
+We compared the models using the `Akaike Information Criterion (AIC)`. The model with the lowest `AIC` value `(model_cars)` was selected as the best fit for the data.
+
+```{r}
+AIC(model_cars)
+AIC(model_cars_only_wt)
+
+```
+
+# 9.0 CONCLUSION
+
+In conclusion, we performed multiple linear regression analysis on the mtcars dataset to predict "mpg" based on various car attributes. We found that the combination of predictors "cyl" and "wt" produced the best-fitted model (model_cars), which had the lowest AIC value. This model could be used for predicting "mpg" for similar car models with high accuracy.
+
+It's essential to note that this analysis is based on the available dataset and may not be applicable to all car models. Further studies and additional variables may be necessary for more comprehensive predictions and insights.
+
+# 10.0 REFERENCES
+
+Wickham, H., & Grolemund, G. (2017). R for Data Science: Import, Tidy, Transform, Visualize, and Model Data. O'Reilly Media.
+
